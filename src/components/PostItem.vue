@@ -1,13 +1,13 @@
 <template>
   <div class="post">
-    <div>
+    <div class="post_info">
       <div><b>Title:</b>{{ post.title }}</div>
       <div>
         <b>Description:</b>
         {{ post.description }}
       </div>
     </div>
-    <div>
+    <div class="pBtn">
       <post-button class="pBtn" @click="removePost">Remove post</post-button>
     </div>
   </div>
@@ -41,11 +41,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  /* width: 80%; */
 }
-/* .pBtn { */
-/* color: #fff; */
-/* background-color: #cecece; */
-/* } */
+.post_info {
+  width: 80%;
+}
 
 /* .post:not(:last-child) { */
 /* margin-bottom: 10px; */

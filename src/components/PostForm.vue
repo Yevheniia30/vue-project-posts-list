@@ -26,6 +26,7 @@ export default {
       post: {
         title: "",
         description: "",
+        // fact: "",
       },
     };
   },
@@ -35,12 +36,20 @@ export default {
       this.$emit("create", this.post);
       this.post = {
         title: "",
-        body: "",
+        description: "",
       };
       // this.title = "";
       // this.description = "";
     },
   },
+  // watch: {
+  //   post: {
+  //     handler(newVal) {
+  //       console.log(newVal);
+  //     },
+  //     deep: true,
+  //   },
+  // },
 };
 </script>
 
