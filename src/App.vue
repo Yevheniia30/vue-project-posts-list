@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <post-input v-model="searchQuery" placeholder="Search" />
     <div class="app_btns">
       <post-button @click="showModal">Create post</post-button>
       <post-select v-model="selectedSort" :options="sortOptions" />
@@ -7,7 +8,11 @@
     <post-modal v-model:show="isModalShow">
       <post-form @create="createPost" />
     </post-modal>
-    <post-list :posts="posts" @remove="removePost" v-if="!isLoading" />
+    <post-list
+      :posts="sortedAndSearch"
+      @remove="removePost"
+      v-if="!isLoading"
+    />
     <div v-if="isLoading" class="loader">
       <dot-loader
         :loading="loading"
@@ -15,12 +20,21 @@
         :size="size"
       ></dot-loader>
     </div>
+    <pagination
+      v-model="page"
+      :records="total"
+      :per-page="limit"
+      :totalPages="totalPages"
+      @paginate="getPosts"
+      class="pagination"
+    />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import { uuid } from "vue-uuid";
+import Pagination from "v-pagination-3";
 
 import PostList from "@/components/PostList.vue";
 import PostForm from "@/components/PostForm.vue";
@@ -31,14 +45,11 @@ export default {
     PostForm,
     PostList,
     DotLoader,
+    Pagination,
   },
   data() {
     return {
-      posts: [
-        // { id: 1, title: "Javascript", description: "lorem ipsum" },
-        // { id: 2, title: "React", description: "lorem ipsum" },
-        // { id: 3, title: "Vue", description: "lorem ipsum" },
-      ],
+      posts: [],
       isModalShow: false,
       modificatorValue: "",
       isLoading: false,
@@ -48,8 +59,11 @@ export default {
         { value: "title", name: "By title" },
         { value: "description", name: "By description" },
       ],
-      // title: "",
-      // description: "",
+      searchQuery: "",
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+      total: 0,
     };
   },
   methods: {
@@ -66,9 +80,12 @@ export default {
     async getPosts() {
       this.isLoading = true;
       try {
-        const response = await axios.get(
-          "https://catfact.ninja/facts?limit=10"
-        );
+        const response = await axios.get("https://catfact.ninja/facts", {
+          params: {
+            page: this.page,
+            limit: this.limit,
+          },
+        });
         console.log(response);
         const newPosts = response.data.data.map((item) => {
           return {
@@ -79,6 +96,9 @@ export default {
         });
         console.log(newPosts);
         this.posts = newPosts;
+        this.total = response.data.total;
+        this.totalPages = response.data.last_page;
+        console.log(this.totalPages);
       } catch (err) {
         alert("Error!");
       } finally {
@@ -89,13 +109,19 @@ export default {
   mounted() {
     this.getPosts();
   },
-  watch: {
-    selectedSort(newValue) {
-      this.posts.sort((post1, post2) => {
-        return post1[newValue]?.localeCompare(post2[newValue]);
-      });
+  computed: {
+    sortedPosts() {
+      return [...this.posts].sort((post1, post2) =>
+        post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
+      );
+    },
+    sortedAndSearch() {
+      return this.sortedPosts.filter((post) =>
+        post.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
     },
   },
+  watch: {},
 };
 </script>
 
@@ -121,5 +147,36 @@ export default {
 }
 .title {
   margin-bottom: 10px;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 15px;
+  list-style-type: none;
+}
+.pagination:not(:last-child) {
+  margin-right: 10px;
+}
+.VuePagination__pagination-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+  /* padding: 5px; */
+  text-decoration: none;
+  cursor: pointer;
+
+  border-radius: 50%;
+  background-color: #cecece;
+}
+.active {
+  background-color: #42b983;
+}
+
+.page-link {
+  border: none;
+  background-color: transparent;
 }
 </style>
