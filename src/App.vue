@@ -13,6 +13,7 @@
       @remove="removePost"
       v-if="!isLoading"
     />
+    <div ref="observer" class="observer"></div>
     <div v-if="isLoading" class="loader">
       <dot-loader
         :loading="loading"
@@ -20,21 +21,21 @@
         :size="size"
       ></dot-loader>
     </div>
-    <pagination
+    <!-- <pagination
       v-model="page"
       :records="total"
       :per-page="limit"
       :totalPages="totalPages"
       @paginate="getPosts"
       class="pagination"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import { uuid } from "vue-uuid";
-import Pagination from "v-pagination-3";
+// import Pagination from "v-pagination-3";
 
 import PostList from "@/components/PostList.vue";
 import PostForm from "@/components/PostForm.vue";
@@ -45,7 +46,7 @@ export default {
     PostForm,
     PostList,
     DotLoader,
-    Pagination,
+    // Pagination,
   },
   data() {
     return {
@@ -105,9 +106,52 @@ export default {
         this.isLoading = false;
       }
     },
+
+    async loadMorePosts() {
+      // this.isLoading = true;
+      try {
+        this.page += 1;
+        const response = await axios.get("https://catfact.ninja/facts", {
+          params: {
+            page: this.page,
+            limit: this.limit,
+          },
+        });
+        console.log(response);
+        const newPosts = response.data.data.map((item) => {
+          return {
+            id: uuid.v1(),
+            title: "Interesting fact about cats",
+            description: item.fact,
+          };
+        });
+        console.log(newPosts);
+        this.posts = [...this.posts, ...newPosts];
+        this.total = response.data.total;
+        this.totalPages = response.data.last_page;
+        console.log(this.totalPages);
+      } catch (err) {
+        alert("Error!");
+      } finally {
+        // this.isLoading = false;
+      }
+    },
   },
   mounted() {
     this.getPosts();
+    const options = {
+      // root: document.querySelector("#scrollArea"),
+      rootMargin: "0px",
+      threshold: 1.0,
+    };
+    const callback = (entries) => {
+      /* Content excerpted, show below */
+      if (entries[0].isIntersecting) {
+        this.loadMorePosts();
+      }
+    };
+    const observer = new IntersectionObserver(callback, options);
+    observer.observe(this.$refs.observer);
   },
   computed: {
     sortedPosts() {
@@ -178,5 +222,7 @@ export default {
 .page-link {
   border: none;
   background-color: transparent;
+}
+.observer {
 }
 </style>

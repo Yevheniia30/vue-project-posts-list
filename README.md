@@ -1,4 +1,4 @@
-# vue-prolect
+# vue-project
 
 ## Project setup
 ```
