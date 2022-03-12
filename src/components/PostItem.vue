@@ -8,7 +8,11 @@
       </div>
     </div>
     <div class="pBtn">
-      <post-button class="pBtn" @click="removePost">Remove post</post-button>
+      <post-button class="pBtn" @click="$router.push(`/posts/${post.id}`)"
+        >Open</post-button
+      >
+
+      <post-button class="pBtn" @click="removePost">Remove</post-button>
     </div>
   </div>
 </template>
@@ -46,8 +50,12 @@ export default {
 .post_info {
   width: 80%;
 }
+.pBtn {
+  display: flex;
+  align-items: center;
+}
 
-/* .post:not(:last-child) { */
-/* margin-bottom: 10px; */
-/* } */
+.pBtn:not(:last-child) {
+  margin-right: 5px;
+}
 </style>
