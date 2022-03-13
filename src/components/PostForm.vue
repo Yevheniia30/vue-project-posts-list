@@ -1,7 +1,7 @@
 <template>
   <form class="form" @submit.prevent>
     <h2 class="title">Create post</h2>
-    <post-input type="text" v-model="post.title" placeholder="Title" />
+    <post-input v-focus type="text" v-model="post.title" placeholder="Title" />
     <textarea
       v-model="post.description"
       name=""

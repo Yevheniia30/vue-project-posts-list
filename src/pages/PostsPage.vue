@@ -1,6 +1,6 @@
 <template>
   <div>
-    <post-input v-model="searchQuery" placeholder="Search" />
+    <post-input v-focus v-model="searchQuery" placeholder="Search" />
     <div class="app_btns">
       <post-button @click="showModal">Create post</post-button>
       <post-select v-model="selectedSort" :options="sortOptions" />
@@ -13,7 +13,7 @@
       @remove="removePost"
       v-if="!isLoading"
     />
-    <div ref="observer" class="observer"></div>
+    <div v-intersection="loadMorePosts" class="observer"></div>
     <div v-if="isLoading" class="loader">
       <dot-loader :loading="loading" :color="color" :size="size"></dot-loader>
     </div>
@@ -83,7 +83,7 @@ export default {
             limit: this.limit,
           },
         });
-        console.log(response);
+        // console.log(response);
         const newPosts = response.data.data.map((item) => {
           return {
             id: uuid.v1(),
@@ -91,11 +91,11 @@ export default {
             description: item.fact,
           };
         });
-        console.log(newPosts);
+        // console.log(newPosts);
         this.posts = newPosts;
         this.total = response.data.total;
         this.totalPages = response.data.last_page;
-        console.log(this.totalPages);
+        // console.log(this.totalPages);
       } catch (err) {
         alert("Error!");
       } finally {
@@ -135,19 +135,6 @@ export default {
   },
   mounted() {
     this.getPosts();
-    const options = {
-      // root: document.querySelector("#scrollArea"),
-      rootMargin: "0px",
-      threshold: 1.0,
-    };
-    const callback = (entries) => {
-      /* Content excerpted, show below */
-      if (entries[0].isIntersecting && this.page < this.totalPages) {
-        this.loadMorePosts();
-      }
-    };
-    const observer = new IntersectionObserver(callback, options);
-    observer.observe(this.$refs.observer);
   },
   computed: {
     sortedPosts() {
