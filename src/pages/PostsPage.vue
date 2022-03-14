@@ -97,7 +97,7 @@ export default {
         this.totalPages = response.data.last_page;
         // console.log(this.totalPages);
       } catch (err) {
-        alert("Error!");
+        console.log(err);
       } finally {
         this.isLoading = false;
       }
@@ -127,7 +127,7 @@ export default {
         this.totalPages = response.data.last_page;
         console.log(this.totalPages);
       } catch (err) {
-        alert("Error!");
+        console.log(err);
       } finally {
         // this.isLoading = false;
       }

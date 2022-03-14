@@ -14,6 +14,11 @@
       <li class="navlink">
         <router-link class="link" to="/store">Posts with Vuex</router-link>
       </li>
+      <li class="navlink">
+        <router-link class="link" to="/compositionapi"
+          >Posts with Composition Api</router-link
+        >
+      </li>
     </ul>
   </div>
 </template>
