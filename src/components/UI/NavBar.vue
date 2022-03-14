@@ -11,6 +11,9 @@
       <li class="navlink">
         <router-link class="link" to="/posts">Posts</router-link>
       </li>
+      <li class="navlink">
+        <router-link class="link" to="/store">Posts with Vuex</router-link>
+      </li>
     </ul>
   </div>
 </template>
