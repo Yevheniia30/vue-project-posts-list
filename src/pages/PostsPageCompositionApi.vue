@@ -21,22 +21,22 @@
 </template>
 
 <script>
-// import usePosts from "@/hooks/usePosts";
-// import useSortedPosts from "@/hooks/useSortedPosts";
-// import useSearchSortedPosts from "@/hooks/useSearchSortedPosts";
+import usePosts from "@/hooks/usePosts";
+import useSortedPosts from "@/hooks/useSortedPosts";
+import useSearchSortedPosts from "@/hooks/useSearchSortedPosts";
 // import { ref } from "vue";
 // import axios from "axios";
 // import { uuid } from "vue-uuid";
 // import Pagination from "v-pagination-3";
 
-// import PostList from "@/components/PostList.vue";
-// import PostForm from "@/components/PostForm.vue";
+import PostList from "@/components/PostList.vue";
+import PostForm from "@/components/PostForm.vue";
 // import DotLoader from "vue-spinner/src/DotLoader.vue";
 
 export default {
   components: {
-    // PostForm,
-    // PostList,
+    PostForm,
+    PostList,
     // DotLoader,
     // Pagination,
   },
@@ -52,23 +52,23 @@ export default {
 
   setup(props) {
     console.log(props);
-    // const { posts, totalPages, total, isLoading } = usePosts({
-    //   page: 1,
-    //   limit: 10,
-    // });
-    // const { selectedSort, sortedPosts } = useSortedPosts(posts);
-    // const { searchQuery, sortedAndSearch } = useSearchSortedPosts(sortedPosts);
+    const { posts, totalPages, total, isLoading } = usePosts({
+      page: 1,
+      limit: 10,
+    });
+    const { selectedSort, sortedPosts } = useSortedPosts(posts);
+    const { searchQuery, sortedAndSearch } = useSearchSortedPosts(sortedPosts);
     // console.log(props);
-    // return {
-    //   posts,
-    //   totalPages,
-    //   total,
-    //   isLoading,
-    //   selectedSort,
-    //   sortedPosts,
-    //   searchQuery,
-    //   sortedAndSearch,
-    // };
+    return {
+      posts,
+      totalPages,
+      total,
+      isLoading,
+      selectedSort,
+      sortedPosts,
+      searchQuery,
+      sortedAndSearch,
+    };
   },
   //   methods: {
   //     createPost(post) {

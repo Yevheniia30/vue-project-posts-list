@@ -1,5 +1,5 @@
 <template>
-  <select :value="modelValue" @change="changeOptions">
+  <select :value="modelValue" @change="changeOptions" class="input">
     <option disabled value="">Sort by...</option>
     <option v-for="option in options" :key="option.value" :value="option.value">
       {{ option.name }}
@@ -27,4 +27,11 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.input {
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid #cecece;
+  border-radius: 6px;
+}
+</style>

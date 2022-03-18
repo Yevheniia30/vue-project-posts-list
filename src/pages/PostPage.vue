@@ -5,7 +5,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {};
+  },
+  methods: {
+    async getPost() {},
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

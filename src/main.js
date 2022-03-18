@@ -1,4 +1,5 @@
 import { createApp } from "vue";
+import { BootstrapIconsPlugin } from "bootstrap-icons-vue";
 import App from "./App";
 import router from "@/router/router";
 import store from "@/store/index";
@@ -20,4 +21,4 @@ directives.forEach((directive) => {
 
 // app.directive("intersection", VIntersection);
 
-app.use(router).use(store).mount("#app");
+app.use(router).use(store).use(BootstrapIconsPlugin).mount("#app");

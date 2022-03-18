@@ -39,10 +39,12 @@
       @remove="removePost"
       v-if="!isLoading"
     />
-    <div v-intersection="loadMorePosts" class="observer"></div>
-    <div v-if="isLoading" class="loader">
+    <div v-else class="loader">
       <dot-loader :loading="loading" :color="color" :size="size"></dot-loader>
     </div>
+
+    <div v-intersection="loadMorePosts" class="observer"></div>
+
     <!-- <pagination
       v-model="page"
       :records="total"

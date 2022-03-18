@@ -1,5 +1,5 @@
 import axios from "axios";
-import { uuid } from "vue-uuid";
+// import { uuid } from "vue-uuid";
 import { ref, onMounted } from "vue";
 const usePosts = ({ page, limit }) => {
   const posts = ref([]);
@@ -10,24 +10,24 @@ const usePosts = ({ page, limit }) => {
     try {
       isLoading.value = true;
 
-      const response = await axios.get("https://catfact.ninja/facts", {
+      const response = await axios.get("http://localhost:7000/api/posts", {
         params: {
           page,
           limit,
         },
       });
       // console.log(response);
-      const newPosts = response.data.data.map((item) => {
-        return {
-          id: uuid.v1(),
-          title: "Interesting fact about cats",
-          description: item.fact,
-        };
-      });
+      // const newPosts = response.data.data.map((item) => {
+      //   return {
+      //     id: uuid.v1(),
+      //     title: "Interesting fact about cats",
+      //     description: item.fact,
+      //   };
+      // });
       // console.log(newPosts);
-      posts.value = newPosts;
-      total.value = response.data.total;
-      totalPages.value = response.data.last_page;
+      posts.value = response.data.rows;
+      total.value = response.data.count;
+      totalPages.value = Math.ceil(response.data.count / limit);
       // console.log(this.totalPages);
     } catch (err) {
       alert("Error!");

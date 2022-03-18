@@ -1,18 +1,27 @@
 <template>
   <div class="post">
-    <div class="post_info">
-      <div><b>Title:</b>{{ post.title }}</div>
-      <div>
-        <b>Description:</b>
-        {{ post.description }}
+    <div>
+      <div class="post_info">
+        <div style="display: flex; justify-content: space-between">
+          <div>
+            <b>Title:</b>
+            {{ post.title }}
+          </div>
+          <div style="display: flex">
+            <BIconPencilFill @click="removePost" class="pBtn edit" />
+            <BIconArchiveFill @click="removePost" class="pBtn" />
+          </div>
+        </div>
+        <div>
+          <b>Description:</b>
+          {{ post.description }}
+        </div>
       </div>
     </div>
     <div class="pBtn">
       <post-button class="pBtn" @click="$router.push(`/posts/${post.id}`)"
-        >Open</post-button
+        >Show more...</post-button
       >
-
-      <post-button class="pBtn" @click="removePost">Remove</post-button>
     </div>
   </div>
 </template>
@@ -43,16 +52,28 @@ export default {
   border: 1px solid #cecece;
   margin-top: 15px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  /* align-items: center; */
+  /* justify-content: space-between; */
   /* width: 80%; */
 }
-.post_info {
-  width: 80%;
-}
+/* .post_info {
+  width: 90%;
+} */
 .pBtn {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
+  cursor: pointer;
+  fill: #a8a7a7;
+}
+.pBtn:hover,
+.pBtn:focus {
+  fill: rgb(190, 10, 10);
+}
+.edit:hover,
+.edit:focus {
+  fill: rgb(253, 217, 12);
 }
 
 .pBtn:not(:last-child) {

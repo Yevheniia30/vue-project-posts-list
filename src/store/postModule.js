@@ -1,5 +1,5 @@
 import axios from "axios";
-import { uuid } from "vue-uuid";
+// import { uuid } from "vue-uuid";
 
 export default {
   state: () => ({
@@ -60,25 +60,18 @@ export default {
   actions: {
     async getPosts({ state, commit }) {
       try {
+        commit("setPage", 1);
         commit("setIsLoading", true);
-        const response = await axios.get("https://catfact.ninja/facts", {
+        const response = await axios.get("http://localhost:7000/api/posts", {
           params: {
             page: state.page,
             limit: state.limit,
           },
         });
         // console.log(response);
-        const newPosts = response.data.data.map((item) => {
-          return {
-            id: uuid.v1(),
-            title: "Interesting fact about cats",
-            description: item.fact,
-          };
-        });
-        // console.log(newPosts);
-        commit("setPosts", newPosts);
-        commit("setTotal", response.data.total);
-        commit("setTotalPages", response.data.last_page);
+        commit("setPosts", response.data.rows);
+        commit("setTotal", response.data.count);
+        commit("setTotalPages", response.data.count / state.limit);
         // console.log(this.totalPages);
       } catch (err) {
         console.log(err);
@@ -90,25 +83,17 @@ export default {
     async loadMorePosts({ state, commit }) {
       try {
         commit("setPage", state.page + 1);
-        const response = await axios.get("https://catfact.ninja/facts", {
+        const response = await axios.get("http://localhost:7000/api/posts", {
           params: {
             page: state.page,
             limit: state.limit,
           },
         });
-        console.log(response);
-        const newPosts = response.data.data.map((item) => {
-          return {
-            id: uuid.v1(),
-            title: "Interesting fact about cats",
-            description: item.fact,
-          };
-        });
-        // console.log(newPosts);
-        commit("setPosts", [...state.posts, ...newPosts]);
+        // console.log(response);
+        commit("setPosts", [...state.posts, ...response.data.rows]);
 
-        commit("setTotal", response.data.total);
-        commit("setTotalPages", response.data.last_page);
+        commit("setTotal", response.data.count);
+        commit("setTotalPages", response.data.count / state.limit);
         // console.log(this.totalPages);
       } catch (err) {
         console.log(err);

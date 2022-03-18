@@ -13,10 +13,11 @@
       @remove="removePost"
       v-if="!isLoading"
     />
-    <div v-intersection="loadMorePosts" class="observer"></div>
-    <div v-if="isLoading" class="loader">
+    <div v-else class="loader">
       <dot-loader :loading="loading" :color="color" :size="size"></dot-loader>
     </div>
+    <div v-intersection="loadMorePosts" class="observer"></div>
+
     <!-- <pagination
       v-model="page"
       :records="total"
@@ -30,7 +31,7 @@
 
 <script>
 import axios from "axios";
-import { uuid } from "vue-uuid";
+// import { uuid } from "vue-uuid";
 // import Pagination from "v-pagination-3";
 
 import PostList from "@/components/PostList.vue";
@@ -64,37 +65,72 @@ export default {
     };
   },
   methods: {
-    createPost(post) {
-      this.posts.push(post);
-      this.isModalShow = false;
+    async createPost(post) {
+      console.log("post", post);
+      let response = {};
+      // this.isLoading = true;
+
+      try {
+        response = await axios.post(
+          "http://localhost:7000/api/posts/create",
+          post
+        );
+        console.log("resposne", response);
+        this.posts.push(response.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.isModalShow = false;
+        // this.isLoading = false;
+      }
+      // this.posts.push({
+      //   title: response.title,
+      //   description: response.description,
+      // });
     },
-    removePost(post) {
-      this.posts = this.posts.filter((p) => p.id !== post.id);
+    async removePost(post) {
+      // this.posts = this.posts.filter((p) => p.id !== post.id);
+
+      try {
+        await axios.delete(
+          `http://localhost:7000/api/posts/${post.id}`
+          // {
+          //   params: {
+          //     page: this.page,
+          //     limit: this.limit,
+          //   },
+          // }
+        );
+        this.posts = this.posts.filter((p) => p.id !== post.id);
+      } catch (error) {
+        console.log(error);
+      }
     },
     showModal() {
       this.isModalShow = true;
     },
     async getPosts() {
+      // console.log("getPosts");
       this.isLoading = true;
       try {
-        const response = await axios.get("https://catfact.ninja/facts", {
+        const response = await axios.get("http://localhost:7000/api/posts", {
           params: {
             page: this.page,
             limit: this.limit,
           },
         });
         // console.log(response);
-        const newPosts = response.data.data.map((item) => {
-          return {
-            id: uuid.v1(),
-            title: "Interesting fact about cats",
-            description: item.fact,
-          };
-        });
+        // const newPosts = response.data.data.map((item) => {
+        //   return {
+        //     id: uuid.v1(),
+        //     title: "Interesting fact about cats",
+        //     description: item.fact,
+        //   };
+        // });
         // console.log(newPosts);
-        this.posts = newPosts;
-        this.total = response.data.total;
-        this.totalPages = response.data.last_page;
+        this.posts = response.data.rows;
+        this.total = response.data.count;
+        this.totalPages = Math.ceil(response.data.count / this.limit);
         // console.log(this.totalPages);
       } catch (err) {
         console.log(err);
@@ -104,32 +140,30 @@ export default {
     },
 
     async loadMorePosts() {
-      // this.isLoading = true;
+      // console.log("loadMorePosts");
       try {
         this.page += 1;
-        const response = await axios.get("https://catfact.ninja/facts", {
+        const response = await axios.get("http://localhost:7000/api/posts", {
           params: {
             page: this.page,
             limit: this.limit,
           },
         });
-        console.log(response);
-        const newPosts = response.data.data.map((item) => {
-          return {
-            id: uuid.v1(),
-            title: "Interesting fact about cats",
-            description: item.fact,
-          };
-        });
-        console.log(newPosts);
-        this.posts = [...this.posts, ...newPosts];
-        this.total = response.data.total;
-        this.totalPages = response.data.last_page;
-        console.log(this.totalPages);
+        // console.log(response);
+        // const newPosts = response.data.data.map((item) => {
+        //   return {
+        //     id: uuid.v1(),
+        //     title: "Interesting fact about cats",
+        //     description: item.fact,
+        //   };
+        // });
+        // console.log(newPosts);
+        this.posts = [...this.posts, ...response.data.rows];
+        this.total = response.data.count;
+        this.totalPages = Math.ceil(response.data.count / this.limit);
+        // console.log(this.totalPages);
       } catch (err) {
         console.log(err);
-      } finally {
-        // this.isLoading = false;
       }
     },
   },

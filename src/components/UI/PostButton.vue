@@ -12,10 +12,15 @@ export default {
 .btn {
   align-self: flex-end;
   border-radius: 6px;
-  border: none;
+  border: 1px solid #cecece;
+  border-radius: 50px;
   padding: 5px 15px;
-  background-color: #cecece;
+  background-color: #fff;
+  /* background-color: #cecece; */
   text-transform: uppercase; /* color: #fff; */
   cursor: pointer;
+}
+.btn:hover {
+  background-color: #42b983;
 }
 </style>
