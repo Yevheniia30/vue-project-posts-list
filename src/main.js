@@ -1,5 +1,7 @@
 import { createApp } from "vue";
 import { BootstrapIconsPlugin } from "bootstrap-icons-vue";
+// import { UploadMedia, UpdateMedia } from "vue-media-upload";
+
 import App from "./App";
 import router from "@/router/router";
 import store from "@/store/index";
@@ -18,6 +20,9 @@ components.forEach((component) => {
 directives.forEach((directive) => {
   app.directive(directive.name, directive);
 });
+
+// app.component("upload-media", UploadMedia);
+// app.component("update-media", UpdateMedia);
 
 // app.directive("intersection", VIntersection);
 

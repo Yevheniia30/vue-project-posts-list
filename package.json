@@ -15,6 +15,7 @@
     "core-js": "^3.8.3",
     "v-pagination-3": "^0.1.7",
     "vue": "^3.2.31",
+    "vue-media-upload": "^1.0.3",
     "vue-router": "^4.0.14",
     "vue-spinner": "^1.0.4",
     "vue-uuid": "^3.0.0",

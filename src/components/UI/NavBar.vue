@@ -20,12 +20,37 @@
         >
       </li>
     </ul>
+    <div v-if="!isAuth">
+      <post-button class="authBtn" @click="showModal">Log in</post-button>
+      <post-button class="authBtn" @click="showModal">Sign up</post-button>
+    </div>
+    <div v-else>
+      <post-button class="authBtn" @click="showModal">Exit</post-button>
+    </div>
+    <post-modal v-model:show="isModalShow">
+      <auth-form @create="createPost" />
+    </post-modal>
   </div>
 </template>
 
 <script>
+import AuthForm from "@/components/AuthForm.vue";
+
 export default {
+  components: {
+    AuthForm,
+  },
   name: "nav-bar",
+  data() {
+    return {
+      isModalShow: false,
+    };
+  },
+  methods: {
+    showModal() {
+      this.isModalShow = true;
+    },
+  },
 };
 </script>
 
@@ -36,6 +61,7 @@ export default {
   background-color: #42b983;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 25px;
 }
 .navlist {
@@ -52,6 +78,14 @@ export default {
   color: #000;
 }
 .router-link-active {
+  color: rgb(106, 23, 216);
+}
+.authBtn {
+  background-color: transparent;
+  border: none;
+}
+.authBtn:hover,
+.authBtn:focus {
   color: rgb(106, 23, 216);
 }
 </style>

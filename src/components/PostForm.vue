@@ -11,6 +11,17 @@
       placeholder="Description"
       class="input"
     ></textarea>
+    <!-- <upload-media> -->
+    <form enctype="multipart/form-data">
+      <label for="file" class="label"></label>
+      <input type="file" ref="file" @change="selectFile" />
+    </form>
+    <!-- </upload-media> -->
+    <!-- <upload-media
+      server="/api/upload"
+      error="@error('media'){{'error'}}@enderror"
+    > -->
+    <!-- </upload-media> -->
     <post-button @click="createPost">Add post</post-button>
   </form>
 </template>
@@ -26,20 +37,26 @@ export default {
       post: {
         title: "",
         description: "",
+        img: "",
         // fact: "",
       },
+      file: "",
     };
   },
   methods: {
     createPost() {
       // this.post.id = Date.now();
-      this.$emit("create", this.post);
+      this.$emit("create", this.post, this.file);
       this.post = {
         title: "",
         description: "",
+        // img: "",
       };
       // this.title = "";
       // this.description = "";
+    },
+    selectFile() {
+      this.file = this.$refs.file.files[0];
     },
   },
   // watch: {

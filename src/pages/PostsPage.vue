@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="postsList">
     <post-input v-focus v-model="searchQuery" placeholder="Search" />
     <div class="app_btns">
       <post-button @click="showModal">Create post</post-button>
@@ -65,15 +65,29 @@ export default {
     };
   },
   methods: {
-    async createPost(post) {
-      console.log("post", post);
+    async createPost(post, file) {
+      console.log("post", post.title, "file", file);
       let response = {};
+      // const formData = new FormData();
+      // formData.append("file", this.post.img);
       // this.isLoading = true;
+      const formData = new FormData();
+      formData.append("title", post.title);
+      formData.append("description", post.description);
 
+      formData.append("img", file);
+      console.log("formData", formData);
       try {
         response = await axios.post(
           "http://localhost:7000/api/posts/create",
-          post
+
+          formData,
+          {
+            headers: {
+              "Content-Type":
+                "multipart/form-data; boundary=<calculated when request is sent>",
+            },
+          }
         );
         console.log("resposne", response);
         this.posts.push(response.data);
@@ -187,6 +201,10 @@ export default {
 </script>
 
 <style>
+.postsList {
+  width: 600px;
+  margin: auto;
+}
 /* * {
   margin: 0;
   padding: 0;
