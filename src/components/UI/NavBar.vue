@@ -21,19 +21,22 @@
       </li>
     </ul>
     <div v-if="!isAuth">
-      <post-button class="authBtn" @click="showModal">Log in</post-button>
-      <post-button class="authBtn" @click="showModal">Sign up</post-button>
+      <post-button class="authBtn" @click="showModal(1)">Log in</post-button>
+      <post-button class="authBtn" @click="showModal(2)">Sign up</post-button>
     </div>
-    <div v-else>
-      <post-button class="authBtn" @click="showModal">Exit</post-button>
+    <div v-else class="navlist">
+      <BIconPersonCircle class="userIcon" />
+      <p class="authBtn">{{ currentUser.email }}</p>
+      <post-button class="authBtn" @click="showModal(3)">Exit</post-button>
     </div>
     <post-modal v-model:show="isModalShow">
-      <auth-form @create="createPost" />
+      <auth-form @authHandler="authHandler" />
     </post-modal>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import AuthForm from "@/components/AuthForm.vue";
 
 export default {
@@ -43,12 +46,60 @@ export default {
   name: "nav-bar",
   data() {
     return {
+      currentUser: {},
       isModalShow: false,
+      // errorText: "",
+      isAuth: false,
+      isLogin: false,
+      isRegister: false,
     };
   },
   methods: {
-    showModal() {
+    showModal(stage) {
+      console.log("stage", stage);
       this.isModalShow = true;
+      if (stage === 1) {
+        this.isLogin = true;
+        this.isRegister = false;
+      }
+      if (stage === 2) {
+        this.isRegister = true;
+        this.isLogin = false;
+      }
+    },
+    async authHandler(user) {
+      try {
+        let response = {};
+        if (this.isRegister) {
+          response = await axios.post(
+            "http://localhost:7000/api/user/register",
+            user
+          );
+          console.log("reg response", response.data);
+        }
+        if (this.isLogin) {
+          response = await axios.post(
+            "http://localhost:7000/api/user/login",
+            user
+          );
+          console.log("log response", response.data);
+        }
+
+        if (response.data.user) {
+          this.currentUser = response.data.user;
+          this.isAuth = true;
+          console.log("currentUser", this.currentUser);
+        }
+      } catch (error) {
+        console.log("auth error", error);
+        // this.errorText = error.message;
+        // console.log("errorText", this.errorText);
+        // this.$emit("showError", error.message);
+      } finally {
+        this.isModalShow = false;
+        this.isRegister = false;
+        this.isLogin = false;
+      }
     },
   },
 };
@@ -68,10 +119,13 @@ export default {
   display: flex;
   list-style-type: none;
   /* justify-content: flex-start; */
-  /* align-items: center; */
+  align-items: center;
 }
 .navlink {
   margin-right: 20px;
+}
+.userIcon {
+  margin-right: 10px;
 }
 .link {
   text-decoration: none;
